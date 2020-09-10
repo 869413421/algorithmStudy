@@ -120,6 +120,34 @@ class linkList
 
         return $str;
     }
+
+    public function reverse()
+    {
+        //如果链表为空不反转
+        if ($this->isEmpty())
+        {
+            return null;
+        }
+        //从第一个元素开始递归调用
+        $this->reverseItem($this->head->getNext());
+    }
+
+    public function reverseItem(node $node)
+    {
+        if ($node->getNext() == null)
+        {
+            //最后一个元素为第一个元素
+            $this->head->setNext($node);
+            return $node;
+        }
+
+        //下一个元素返回后变成前一个元素
+        $pre = $this->reverseItem($node->getNext());
+        $pre->setNext($node);
+        $node->setNext(null);
+
+        return $node;
+    }
 }
 
 class node
@@ -177,4 +205,6 @@ echo $linkList->indexOf('詹姆士') . PHP_EOL;
 echo $linkList->insertToIndex(2, '詹姆猪') . PHP_EOL;
 echo $linkList->selectValue() . PHP_EOL;
 echo $linkList->remove(4) . PHP_EOL;
+echo $linkList->selectValue() . PHP_EOL;
+$linkList->reverse();
 echo $linkList->selectValue() . PHP_EOL;

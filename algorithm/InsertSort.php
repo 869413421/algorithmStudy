@@ -8,7 +8,7 @@ function insertSort(array $arr)
         //当前数
         $temp = $arr[$i];
         //找出已经排序数组，倒序比较，如果当前数较小，插入。
-        for ($j = $i; $j >= 0; $j--)
+        for ($j = $i-1; $j >= 0; $j--)
         {
             if ($temp < $arr[$j])
             {
