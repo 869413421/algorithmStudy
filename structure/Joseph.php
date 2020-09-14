@@ -30,7 +30,7 @@ class  Node
     /**
      * @return mixed
      */
-    public function getNext()
+    public function getNext(): Node
     {
         return $this->next;
     }
@@ -78,9 +78,11 @@ function joseph()
         if ($count == 3)
         {
             //删除元素
-            $before->setNext($n->getNext());
+            echo $n->getValue() . PHP_EOL;
+            $n = $n->getNext();
+            $before->setNext($n);
             $count = 0;
-            var_dump($n->getValue());
+
         }
         else
         {
@@ -88,8 +90,6 @@ function joseph()
             $n = $n->getNext();
         }
     }
-
-    var_dump('zuihou' . $n->getValue(), $n->getNext()->getValue());
 }
 
 joseph();
