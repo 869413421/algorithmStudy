@@ -113,6 +113,10 @@ class BinaryTree
         }
     }
 
+    /**
+     * 找到树中最大的键
+     * @return mixed
+     */
     public function max()
     {
         return $this->getMax($this->root)->getKey();
@@ -197,6 +201,163 @@ class BinaryTree
         }
 
         return $x;
+    }
+
+    /**
+     * 先访问根结点，然后再访问左子树，最后访问右子树
+     * @return array
+     */
+    public function preErgodic()
+    {
+        $queue = [];
+        $this->preErgodicByNode($this->root, $queue);
+        return $queue;
+    }
+
+    public function preErgodicByNode(Node $x = null, array &$queue)
+    {
+        //节点已空不处理
+        if ($x == null)
+        {
+            return null;
+        }
+        //1.把当前节点的键存储到队列中去
+        $queue[] = $x->getKey();
+        //2.找到当前节点的左子树，如果不为空，递归遍历左子树
+        if ($x->getLeft() != null)
+        {
+            $this->preErgodicByNode($x->getLeft(), $queue);
+        }
+        //2.找到当前节点的右子树，如果不为空，递归遍历右子树
+        if ($x->getRight() != null)
+        {
+            $this->preErgodicByNode($x->getRight(), $queue);
+        }
+    }
+
+    /**
+     * 先遍历中间节点，再遍历左边节点，最后遍历右边节点
+     * @return array
+     */
+    public function midErgodic()
+    {
+        $queue = [];
+        $this->midErgodicByNode($this->root, $queue);
+        return $queue;
+    }
+
+    public function midErgodicByNode(Node $x = null, array &$queue)
+    {
+        if ($x == null)
+        {
+            return;
+        }
+        //1.找到当前结点的左子树，如果不为空，递归遍历左子树
+        if ($x->getLeft() != null)
+        {
+            $this->midErgodicByNode($x->getLeft(), $queue);
+        }
+        //2.把当前结点的key放入到队列中;
+        $queue[] = $x->getKey();
+        //3.找到当前结点的右子树，如果不为空，递归遍历右子树
+        if ($x->getRight() != null)
+        {
+            $this->midErgodicByNode($x->getRight(), $queue);
+        }
+    }
+
+    /**
+     * 后序遍历，先左再右，最后插入中间
+     * @return array
+     */
+    public function afterErgodic()
+    {
+        $queue = [];
+        $this->afterErgodicByNode($this->root, $queue);
+        return $queue;
+    }
+
+    public function afterErgodicByNode(Node $x = null, array &$queue)
+    {
+        if ($x == null)
+        {
+            return;
+        }
+
+        if ($x->getLeft() != null)
+        {
+            $this->afterErgodicByNode($x->getLeft(), $queue);
+        }
+
+        if ($x->getRight() != null)
+        {
+            $this->afterErgodicByNode($x->getRight(), $queue);
+        }
+
+        $queue[] = $x->getKey();
+    }
+
+    /**
+     * 层级遍历
+     * @return array
+     */
+    public function layerErgodic()
+    {
+        //1.定义两个队列，分别存储键和节点
+        $nodes = [];
+        $keys = [];
+        $nodes[] = $this->root;
+        while (count($nodes) > 0)
+        {
+            //从队列中弹出一个节点，把key放进队列当中
+            $x = array_shift($nodes);
+            $keys[] = $x->getKey();
+
+            //判断当前有没有左子节点，如果有，放到nodes中
+            if ($x->getLeft() != null)
+            {
+                $nodes[] = $x->getLeft();
+            }
+
+            //判断当前有没有左子节点，如果有，放到nodes中
+            if ($x->getRight() != null)
+            {
+                $nodes[] = $x->getRight();
+            }
+        }
+
+        return $keys;
+    }
+
+    /**
+     * 求树的最大深度
+     * @return int
+     */
+    public function maxDepth()
+    {
+        return $this->getMaxDepth($this->root);
+    }
+
+    public function getMaxDepth(Node $x = null)
+    {
+        if ($x == null)
+        {
+            return 0;
+        }
+
+        $maxL = 0;
+        $maxR = 0;
+        if ($x->getLeft() != null)
+        {
+            $maxL = $this->getMaxDepth($x->getLeft());
+        }
+        if ($x->getRight() != null)
+        {
+            $maxR = $this->getMaxDepth($x->getRight());
+        }
+
+        $max = $maxL > $maxR ? $maxL + 1 : $maxR + 1;
+        return $max;
     }
 }
 
@@ -298,3 +459,112 @@ $binaryTree->delete(7);
 echo '删除后元素:' . $binaryTree->get(7) . PHP_EOL;
 echo '树中最小的键:' . $binaryTree->min() . PHP_EOL;
 echo '树中最大的键:' . $binaryTree->max() . PHP_EOL;
+
+function testPreErgodic()
+{
+    $binaryTree = new BinaryTree();
+    $binaryTree->put("E", "5");
+    $binaryTree->put("B", "2");
+    $binaryTree->put("G", "7");
+    $binaryTree->put("A", "1");
+    $binaryTree->put("D", "4");
+    $binaryTree->put("F", "6");
+    $binaryTree->put("H", "8");
+    $binaryTree->put("C", "3");
+
+    $queue = $binaryTree->preErgodic();
+
+    for ($i = 0; $i < count($queue); $i++)
+    {
+        echo $queue[$i] . PHP_EOL;
+    }
+}
+
+echo '前序遍历' . PHP_EOL;
+testPreErgodic();
+
+function testMidErgodic()
+{
+    $binaryTree = new BinaryTree();
+    $binaryTree->put("E", "5");
+    $binaryTree->put("B", "2");
+    $binaryTree->put("G", "7");
+    $binaryTree->put("A", "1");
+    $binaryTree->put("D", "4");
+    $binaryTree->put("F", "6");
+    $binaryTree->put("H", "8");
+    $binaryTree->put("C", "3");
+
+    $queue = $binaryTree->midErgodic();
+
+    for ($i = 0; $i < count($queue); $i++)
+    {
+        echo $queue[$i] . PHP_EOL;
+    }
+}
+
+echo '中序遍历' . PHP_EOL;
+testMidErgodic();
+
+function testAfterErgodic()
+{
+    $binaryTree = new BinaryTree();
+    $binaryTree->put("E", "5");
+    $binaryTree->put("B", "2");
+    $binaryTree->put("G", "7");
+    $binaryTree->put("A", "1");
+    $binaryTree->put("D", "4");
+    $binaryTree->put("F", "6");
+    $binaryTree->put("H", "8");
+    $binaryTree->put("C", "3");
+
+    $queue = $binaryTree->afterErgodic();
+
+    for ($i = 0; $i < count($queue); $i++)
+    {
+        echo $queue[$i] . PHP_EOL;
+    }
+}
+
+echo '后序遍历' . PHP_EOL;
+testAfterErgodic();
+
+function testLayerErgodic()
+{
+    $binaryTree = new BinaryTree();
+    $binaryTree->put("E", "5");
+    $binaryTree->put("B", "2");
+    $binaryTree->put("G", "7");
+    $binaryTree->put("A", "1");
+    $binaryTree->put("D", "4");
+    $binaryTree->put("F", "6");
+    $binaryTree->put("H", "8");
+    $binaryTree->put("C", "3");
+
+    $queue = $binaryTree->layerErgodic();
+
+    for ($i = 0; $i < count($queue); $i++)
+    {
+        echo $queue[$i] . PHP_EOL;
+    }
+}
+
+echo '层级遍历' . PHP_EOL;
+testLayerErgodic();
+
+function testMaxDepth()
+{
+    $binaryTree = new BinaryTree();
+    $binaryTree->put("E", "5");
+    $binaryTree->put("B", "2");
+    $binaryTree->put("G", "7");
+    $binaryTree->put("A", "1");
+    $binaryTree->put("D", "4");
+    $binaryTree->put("F", "6");
+    $binaryTree->put("H", "8");
+    $binaryTree->put("C", "3");
+
+    return $binaryTree->maxDepth();
+}
+
+echo '树的最大深度' . testMaxDepth() . PHP_EOL;

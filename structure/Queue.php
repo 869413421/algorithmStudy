@@ -14,6 +14,11 @@ class Queue
         $this->n = 0;
     }
 
+    public function size()
+    {
+        return $this->n;
+    }
+
     public function isEmpty()
     {
         return $this->n == 0;
@@ -55,7 +60,7 @@ class Queue
     }
 }
 
-class Node
+class node
 {
     private $value;
     private $next;
