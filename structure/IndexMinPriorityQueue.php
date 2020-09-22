@@ -6,19 +6,54 @@
  */
 class IndexMinPriorityQueue
 {
+    //原数据，不会改变
     private $items;
-    private $pq;
-    private $qp;
+    //原数据构建的堆
+    private $heap;
+    //堆的反转元素
+    private $resHeap;
+
+    //元素个数
     private $n;
 
     public function __construct()
     {
         $this->items = [];
-        //用来存储元素在items中的索引，是一个有序堆
-        $this->pq = [];
-        //逆转索引
-        $this->qp = [];
+        $this->heap = [];
+        //堆的索引从1开始
+        $this->heap[] = null;
+        $this->resHeap = [];
         $this->n = 0;
+    }
+
+
+    public function less($i, $j)
+    {
+        $indexI = $this->heap[$i];
+        $indexJ = $this->heap[$j];
+
+        //根据堆索引存储的key找到元数据中的value进行比较
+        if ($this->items[$indexI] > $this->items[$indexJ])
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * 交换堆中的元素和反转堆的元素
+     * @param $i
+     * @param $j
+     */
+    public function exec($i, $j)
+    {
+        $temp = $this->heap[$i];
+        $this->heap[$i] = $this->heap[$j];
+        $this->heap[$j] = $temp;
+
+        $this->resHeap[$this->heap[$i]] = $i;
+        $this->resHeap[$this->heap[$j]] = $j;
     }
 
     public function size()
@@ -31,64 +66,27 @@ class IndexMinPriorityQueue
         return $this->n == 0;
     }
 
-    public function less($i, $j)
+    public function container($key)
     {
-        $indexI = $this->pq[$i];
-        $indexJ = $this->pq[$j];
-
-        if ($this->items[$indexI] > $this->items[$indexJ])
-        {
-            return true;
-        }
-
-        return false;
-    }
-
-    public function exec($i, $j)
-    {
-        $temp = $this->pq[$i];
-        $this->pq[$i] = $this->pq[$j];
-        $this->pq[$j] = $temp;
-
-        $this->qp[$this->pq[$i]] = $i;
-        $this->qp[$this->pq[$j]] = $j;
-    }
-
-    public function contains($key)
-    {
-        return array_key_exists($key, $this->qp);
-    }
-
-    /**
-     * 返回最小元素在items中的索引
-     * @return mixed
-     */
-    public function minIndex()
-    {
-        return $this->pq[1];
+        return array_key_exists($key, $this->items);
     }
 
     public function insert($key, $value)
     {
-        if ($this->contains($key))
+        if ($this->container($key))
         {
             throw new RuntimeException('key exists');
         }
 
-        $this->items[] = $value;
+        $this->items[$key] = $value;
         $this->n++;
-
-        $this->pq[$this->n] = $key;
-
-        $this->qp[$key] = $this->n;
+        //将key存到堆中
+        $this->heap[$this->n] = $key;
+        $this->resHeap[$key] = $this->n;
 
         $this->swim($this->n);
     }
 
-    /**
-     * 上浮元素
-     * @param $n
-     */
     public function swim($n)
     {
         while ($n > 1)
@@ -105,26 +103,83 @@ class IndexMinPriorityQueue
 
     public function delMin()
     {
-        //找到items中最小元素的索引
-        $minIndex = $this->pq[1];
-        // //交换pq中索引1处的值和N处的值
+        $minIndex = $this->heap[1];
+        $minItem = $this->items[$minIndex];
+
+        //交换最大最小元素
         $this->exec(1, $this->n);
-        // //删除qp中索引pq[N]处的值
-        unset($this->qp[$this->pq[$this->n]]);
-        //删除pq中索引N处的值 pq[N] = -1;
-        unset($this->pq[$this->n]);
-        // //删除items中的最小元素 items[minIndex] = null;
+        //删除掉resHeap中的元素
+        unset($this->resHeap[$this->heap[$this->n]]);
+        //删除掉heap中的元素
+        unset($this->heap[$this->n]);
+        //删除掉原数据中的元素
         unset($this->items[$minIndex]);
-        // //元素数量-1 N--;
         $this->n--;
-        // //对pq[1]做下沉，让堆有序
         $this->sink(1);
 
-        return $minIndex;
+
+        return $minItem;
     }
 
-    public function sink()
+    /**
+     * 下沉操作
+     * @param $n
+     */
+    public function sink($n)
     {
+        $length = $this->n;
+        while ($n * 2 <= $length)
+        {
+            if ($n * 2 + 1 <= $length)
+            {
+                $left = $n * 2;
+                $right = $n * 2 + 1;
+                if ($this->less($left, $right))
+                {
+                    $min = $right;
+                }
+                else
+                {
+                    $min = $left;
+                }
+            }
+            else
+            {
+                $min = $n * 2;
+            }
 
+            if ($this->less($n, $min))
+            {
+                $this->exec($n, $min);
+                $n = $min;
+            }
+            else
+            {
+                break;
+            }
+        }
     }
 }
+
+$queue = new IndexMinPriorityQueue();
+$queue->insert('xiaoming', 'B');
+$queue->insert('xiaodong', 'A');
+$queue->insert('xiaozhu', 'C');
+$queue->insert('xiaogpu', 'D');
+$queue->insert('xiaogpux', 'E');
+
+
+for ($i = 0; $i < 5; $i++)
+{
+    echo $queue->delMin() . PHP_EOL;
+//echo $queue->delMin() . PHP_EOL;
+//echo $queue->delMin() . PHP_EOL;
+//echo $queue->delMin() . PHP_EOL;
+//echo $queue->delMin() . PHP_EOL;
+}
+
+
+
+
+
+
