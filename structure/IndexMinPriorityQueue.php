@@ -101,6 +101,40 @@ class IndexMinPriorityQueue
         }
     }
 
+    public function delete($key)
+    {
+        //找到key在heap中的索引
+        $heapIndex = $this->resHeap[$key];
+
+        $this->exec($heapIndex, $this->n);
+
+        //删除掉resHeap中最后一个元素
+        unset($this->resHeap[$this->heap[$this->n]]);
+        //删除Heap最后一个元素
+        unset($this->heap[$this->n]);
+        //删除原数据
+        unset($this->items[$key]);
+        if ($heapIndex == $this->n)
+        {
+            $this->n--;
+            return;
+        }
+        $this->n--;
+
+        $this->sink($heapIndex);
+        $this->swim($heapIndex);
+    }
+
+    public function changeItem($key, $value)
+    {
+        //修改原数据的键值
+        $this->items[$key] = $value;
+        //根据键找到在heap中的索引，重新上浮下沉
+        $index = $this->resHeap[$key];
+        $this->sink($index);
+        $this->swim($index);
+    }
+
     public function delMin()
     {
         $minIndex = $this->heap[1];
@@ -166,16 +200,16 @@ $queue->insert('xiaoming', 'B');
 $queue->insert('xiaodong', 'A');
 $queue->insert('xiaozhu', 'C');
 $queue->insert('xiaogpu', 'D');
+
 $queue->insert('xiaogpux', 'E');
+$queue->changeItem('xiaoming', 'F');
+$queue->delete('xiaoming');
+$queue->insert('xiaoming', 'B');
 
 
 for ($i = 0; $i < 5; $i++)
 {
     echo $queue->delMin() . PHP_EOL;
-//echo $queue->delMin() . PHP_EOL;
-//echo $queue->delMin() . PHP_EOL;
-//echo $queue->delMin() . PHP_EOL;
-//echo $queue->delMin() . PHP_EOL;
 }
 
 
