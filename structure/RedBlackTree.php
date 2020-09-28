@@ -20,7 +20,8 @@ class RedBlackTree
      */
     public function isRed(Node $node = null)
     {
-        if ($node == null) {
+        if ($node == null)
+        {
             return false;
         }
 
@@ -100,35 +101,42 @@ class RedBlackTree
     public function putItem(Node $node = null, $key, $value)
     {
         //如果为空直接返回一个新的节点，颜色为红色
-        if ($node == null) {
+        if ($node == null)
+        {
             $this->n++;
             return new Node($key, $value, null, null, 'RED');
         }
 
 
-        if ($key > $node->key) {
-            $node->left = $this->putItem($node->right, $key, $value);
+        if ($key > $node->key)
+        {
+            $node->right = $this->putItem($node->right, $key, $value);
         }
-        if ($key < $node->key) {
-            $node->right = $this->putItem($node->left, $key, $value);
+        if ($key < $node->key)
+        {
+            $node->left = $this->putItem($node->left, $key, $value);
         }
 
-        if ($key == $node->key) {
+        if ($key == $node->key)
+        {
             $node->value = $value;
         }
 
         //如果当前节点的右子节点为红色，并且右子节点为黑色
-        if ($this->isRed($node->right) && !$this->isRed($node->left)) {
+        if ($this->isRed($node->right) && !$this->isRed($node->left))
+        {
             $node = $this->rotateLeft($node);
         }
 
         //如果当前节点的左子节和左子节点的左子节点都为红色，需要右旋
-        if ($this->isRed($node->left) && $this->isRed($node->left->left)) {
+        if ($this->isRed($node->left) && $this->isRed($node->left->left))
+        {
             $node = $this->rotateRight($node);
         }
 
         //如果当前节点的左子节点和右子节点都为红色，需要进行颜色反转
-        if ($this->isRed($node->left) && $this->isRed($node->right)) {
+        if ($this->isRed($node->left) && $this->isRed($node->right))
+        {
             $node = $this->flipColor($node);
         }
 
@@ -143,24 +151,27 @@ class RedBlackTree
     public function get($key)
     {
         $value = $this->getItem($this->root, $key);
-        var_dump($value);
         return $value;
     }
 
     public function getItem(Node $node = null, $key)
     {
-        if ($node == null) {
+        if ($node == null)
+        {
             return null;
         }
 
-        if ($key < $node->key) {
+        if ($key < $node->key)
+        {
             return $this->getItem($node->left, $key);
         }
-        if ($key > $node->key) {
+        if ($key > $node->key)
+        {
             return $this->getItem($node->right, $key);
         }
 
-        if ($key == $node->key) {
+        if ($key == $node->key)
+        {
             return $node->value;
         }
     }
