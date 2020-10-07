@@ -87,6 +87,10 @@ class IndexMinPriorityQueue
         $this->swim($this->n);
     }
 
+    /**
+     * 上浮操作
+     * @param $n
+     */
     public function swim($n)
     {
         while ($n > 1)
