@@ -21,6 +21,16 @@ class DiGraph
         }
     }
 
+    public function V()
+    {
+        return $this->v;
+    }
+
+    public function E()
+    {
+        return $this->e;
+    }
+
     public function addEdge($v, $w)
     {
         $this->adj[$v][] = $w;
