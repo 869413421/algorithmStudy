@@ -75,8 +75,6 @@ function testEdgeWeightedGraph()
         $edge = new Edge($i, $i + 1, $i);
         $graph->addEdge($edge);
     }
-
-    var_dump($graph->edges());
 }
 
 

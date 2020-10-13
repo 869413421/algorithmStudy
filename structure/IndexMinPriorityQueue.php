@@ -156,7 +156,7 @@ class IndexMinPriorityQueue
         $this->sink(1);
 
 
-        return $minItem;
+        return $minIndex;
     }
 
     /**
@@ -199,22 +199,22 @@ class IndexMinPriorityQueue
     }
 }
 
-$queue = new IndexMinPriorityQueue();
-$queue->insert('xiaoming', 'B');
-$queue->insert('xiaodong', 'A');
-$queue->insert('xiaozhu', 'C');
-$queue->insert('xiaogpu', 'D');
-
-$queue->insert('xiaogpux', 'E');
-$queue->changeItem('xiaoming', 'F');
-$queue->delete('xiaoming');
-$queue->insert('xiaoming', 'B');
-
-
-for ($i = 0; $i < 5; $i++)
-{
-    echo $queue->delMin() . PHP_EOL;
-}
+//$queue = new IndexMinPriorityQueue();
+//$queue->insert('xiaoming', 'B');
+//$queue->insert('xiaodong', 'A');
+//$queue->insert('xiaozhu', 'C');
+//$queue->insert('xiaogpu', 'D');
+//
+//$queue->insert('xiaogpux', 'E');
+//$queue->changeItem('xiaoming', 'F');
+//$queue->delete('xiaoming');
+//$queue->insert('xiaoming', 'B');
+//
+//
+//for ($i = 0; $i < 5; $i++)
+//{
+//    echo $queue->delMin() . PHP_EOL;
+//}
 
 
 
