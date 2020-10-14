@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/Edge.php';
 
 /**
  * 最小优先队列
@@ -18,12 +19,22 @@ class MinPriorityQueue
 
     public function less($i, $k)
     {
-        if ($this->items[$i] > $this->items[$k])
-        {
-            return true;
+        //kruskal使用比较规则
+        if ($this->items[$i] instanceof Edge) {
+            if ($this->items[$i]->weight() > $this->items[$k]->weight()) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+
+            if ($this->items[$i] > $this->items[$k]) {
+                return true;
+            }
+
+            return false;
         }
 
-        return false;
     }
 
     public function exec($i, $k)
@@ -47,8 +58,7 @@ class MinPriorityQueue
 
     public function deleteMin()
     {
-        if ($this->isEmpty())
-        {
+        if ($this->isEmpty()) {
             return null;
         }
 
@@ -65,29 +75,21 @@ class MinPriorityQueue
     public function sink($n)
     {
         $length = $this->n;
-        while ($n * 2 <= $length)
-        {
+        while ($n * 2 <= $length) {
             //有右节点
-            if ($n * 2 + 1 <= $length)
-            {
+            if ($n * 2 + 1 <= $length) {
                 $left = $n * 2;
                 $right = $n * 2 + 1;
-                if ($this->less($left, $right))
-                {
+                if ($this->less($left, $right)) {
                     $min = $right;
-                }
-                else
-                {
+                } else {
                     $min = $left;
                 }
-            }
-            else
-            {
+            } else {
                 $min = $n * 2;
             }
 
-            if ($this->less($min, $n))
-            {
+            if ($this->less($min, $n)) {
                 break;
             }
 
@@ -102,11 +104,9 @@ class MinPriorityQueue
      */
     public function swim($n)
     {
-        while ($n > 1)
-        {
+        while ($n > 1) {
             //如果当前节点比上级节点大,结束上浮
-            if ($this->less($n, intval($n / 2)))
-            {
+            if ($this->less($n, intval($n / 2))) {
                 break;
             }
 
@@ -118,12 +118,10 @@ class MinPriorityQueue
 
 $minPriorityQueue = new MinPriorityQueue();
 $arr = ["S", "O", "R", "T", "E", "X", "A", "M", "P", "L", "E"];
-foreach ($arr as $item)
-{
+foreach ($arr as $item) {
     $minPriorityQueue->insert($item);
 }
 
-foreach ($arr as $item)
-{
+foreach ($arr as $item) {
     echo $minPriorityQueue->deleteMin() . PHP_EOL;
 }
